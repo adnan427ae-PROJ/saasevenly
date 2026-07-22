@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Acme SaaS — Pricing</title>
+  <!--
+    This file is NOT part of the saasevenly app. It pretends to be a totally
+    separate customer's website (a fake company called "Acme SaaS").
+
+    It shows the ENTIRE integration a real customer does:
+      1. Wrap each price in <span data-saasevenly="BASE_USD">$X</span>
+      2. Load the script once: <script src=".../saasevenly.js"></script>
+
+    HOW TO SEE IT WORK:
+      - Make sure your saasevenly dev server is running (npm run dev).
+      - Open this file in a browser by DOUBLE-CLICKING it (file:// is fine).
+      - The prices flash amber and switch to your detected country's currency.
+      - Try a different country by adding ?country=IN to the URL of THIS page,
+        e.g.  .../example-embed.html?country=IN
+  -->
+  <style>
+    body { font-family: system-ui, sans-serif; background:#fafafa; color:#171717;
+           max-width: 760px; margin: 0 auto; padding: 56px 24px; }
+    h1 { font-size: 2rem; }
+    .muted { color:#737373; }
+    .cards { display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-top:32px; }
+    .card { background:#fff; border:1px solid #e5e5e5; border-radius:16px; padding:24px; }
+    .price { font-size: 2.25rem; font-weight: 700; }
+    .per { color:#737373; font-size:.9rem; }
+    .tag { display:inline-block; background:#fef3c7; color:#d97706; font-weight:600;
+           font-size:.8rem; padding:2px 10px; border-radius:999px; }
+  </style>
+</head>
+<body>
+  <span class="tag">A pretend customer website</span>
+  <h1>Acme SaaS</h1>
+  <p class="muted">
+    Acme set one base price in USD. saasevenly localizes it for each visitor.
+  </p>
+
+  <div class="cards">
+    <div class="card">
+      <h2>Basic</h2>
+      <!-- The ONLY saasevenly-specific markup: the data-saasevenly attribute. -->
+      <div><span class="price" data-saasevenly="12">$12</span><span class="per"> /mo</span></div>
+    </div>
+    <div class="card">
+      <h2>Premium</h2>
+      <div><span class="price" data-saasevenly="29">$29</span><span class="per"> /mo</span></div>
+    </div>
+  </div>
+
+  <p class="muted" style="margin-top:32px;">
+    The two prices above start as plain USD, then the widget below rewrites them.
+  </p>
+
+  <!-- Load the widget once. Points at your local dev server.
+       In production this would be https://your-domain.com/saasevenly.js -->
+  <script src="http://localhost:3000/saasevenly.js"></script>
+</body>
+</html>

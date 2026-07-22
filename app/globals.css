@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base page look: clean, light, lots of whitespace. */
+body {
+  @apply bg-neutral-50 text-neutral-900 antialiased;
+}
+
+/* The amber "flash" the widget triggers when a price is localized.
+   We fade a soft amber background in and back out over ~1s. */
+@keyframes saasevenly-flash {
+  0%   { background-color: transparent; }
+  20%  { background-color: #fef3c7; }   /* amber-100 */
+  100% { background-color: transparent; }
+}
+.saasevenly-flash {
+  animation: saasevenly-flash 1s ease-out;
+  border-radius: 0.25rem;
+}
+
+/* ---------- Scroll-reveal (driven by app/components/Reveal.js) ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .animate-fade-up,
+  .animate-fade-in,
+  .animate-float,
+  .animate-float-slow,
+  .animate-marquee,
+  .animate-spin-slow,
+  .animate-blob,
+  .animate-pulse-ring {
+    animation: none !important;
+  }
+}
+
+/* ---------- Decorative helpers ---------- */
+
+/* Animated amber gradient text for headline highlights. */
+.text-gradient {
+  @apply bg-clip-text text-transparent;
+  background-image: linear-gradient(90deg, #f59e0b, #ef4444, #f59e0b);
+  background-size: 200% auto;
+  animation: gradient-x 6s ease infinite;
+}
+@keyframes gradient-x {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Faint blueprint grid behind the hero. Fades out toward the bottom. */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(0 0 0 / 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(0 0 0 / 0.045) 1px, transparent 1px);
+  background-size: 44px 44px;
+  -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 55%, transparent 100%);
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 55%, transparent 100%);
+}
+
+/* Cards that lift gently on hover. */
+.card-lift {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card-lift:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 18px 40px -18px rgb(0 0 0 / 0.22);
+}
+
+/* Frosted-glass sticky nav. */
+.glass {
+  background: rgb(250 250 250 / 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Pause the logo marquee on hover so names stay readable. */
+.marquee-track:hover {
+  animation-play-state: paused;
+}

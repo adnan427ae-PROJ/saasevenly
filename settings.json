@@ -1,0 +1,8 @@
+{
+  "baseUSD": 19,
+  "endingStyle": "9",
+  "passthrough": 100,
+  "maxDiscount": 50,
+  "chargePremium": true,
+  "paymentProvider": "stripe"
+}
