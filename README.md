@@ -131,7 +131,7 @@ Only the first one is required.
 | `PAYPAL_CLIENT_ID` / `PAYPAL_CLIENT_SECRET` / `PAYPAL_ENV` | no | PayPal gateway. |
 | `RAZORPAY_KEY_ID` / `RAZORPAY_KEY_SECRET` | no | Razorpay gateway (good for India/South Asia). |
 | `DODO_PAYMENTS_API_KEY` / `DODO_PRODUCT_ID` / `DODO_ENV` | no | Dodo Payments (merchant of record — handles global tax for you). |
-| `NEXT_PUBLIC_DEMO_MODE` | no | Set to `1` to run a public *demo* instance: landing page, live pricing demo and install guide stay up, but signup and login are closed. This is what saasevenly.vercel.app runs. Leave it unset for a normal instance. |
+| `NEXT_PUBLIC_DEMO_MODE` | no | Set to `1` to run a public *demo* instance: landing page, live pricing demo and install guide stay up, but signup and login are closed. A demo instance stores nothing, so it ignores `DATABASE_URL` and runs on built-in sample data — no database needed. This is what saasevenly.vercel.app runs. Leave it unset for a normal instance. |
 | `NEXT_PUBLIC_KOFI_URL` | no | Override the donate link if you fork this. |
 
 See [`.env.local.example`](.env.local.example) for the annotated version with
