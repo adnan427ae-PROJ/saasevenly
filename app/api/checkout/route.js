@@ -19,14 +19,28 @@ import { getProvider } from "@/lib/payments";
 import { resolveTenantFromBody, isTenantActive, isDomainAllowed } from "@/lib/requestTenant";
 import { rowToSettings } from "@/lib/tenants";
 import { getProduct } from "@/lib/products";
+import { isDemoTenant } from "@/lib/demoData";
 
 export async function POST(request) {
   const body = await request.json().catch(() => ({}));
 
-  // Which founder owns this checkout, and are they an active saasevenly customer?
+  // Which founder owns this checkout?
   const tenant = await resolveTenantFromBody(body);
   if (!tenant) {
     return NextResponse.json({ error: "Unknown site key." }, { status: 404 });
+  }
+  // The built-in demo tenant has no gateway keys and never will — it exists to
+  // show the pricing, not to take money. Say so plainly instead of failing with
+  // a confusing gateway error.
+  if (isDemoTenant(tenant)) {
+    return NextResponse.json(
+      {
+        demo: true,
+        error:
+          "This is the public demo, so there's no real gateway behind it. On your own deployment this button opens a real checkout, in this currency, at this exact price — paid straight into your own Stripe, PayPal, Razorpay or Dodo account.",
+      },
+      { status: 200 }
+    );
   }
   // Anti-piracy: reject checkouts started from a domain the founder didn't register.
   if (!isDomainAllowed(tenant, request)) {
@@ -37,8 +51,8 @@ export async function POST(request) {
   }
   if (!isTenantActive(tenant)) {
     return NextResponse.json(
-      { error: "This site's saasevenly subscription is inactive — checkout is disabled." },
-      { status: 402 }
+      { error: "Unknown site key — no account matches it on this instance." },
+      { status: 404 }
     );
   }
   const settings = rowToSettings(tenant);

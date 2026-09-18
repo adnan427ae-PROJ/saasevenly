@@ -44,12 +44,12 @@ export async function GET(request) {
       { status: 403, headers: CORS }
     );
   }
-  // SUBSCRIPTION GATE: if the founder isn't a paying saasevenly customer, we
-  // don't localize. The widget then just leaves the original USD prices in place.
+  // There's no paid tier to check — saasevenly is free software. The only way
+  // this fails is an unknown site key, i.e. no tenant at all.
   if (!isTenantActive(tenant)) {
     return NextResponse.json(
-      { ok: false, gated: true, reason: "saasevenly subscription inactive" },
-      { status: 402, headers: CORS }
+      { ok: false, gated: true, reason: "unknown site key" },
+      { status: 404, headers: CORS }
     );
   }
 

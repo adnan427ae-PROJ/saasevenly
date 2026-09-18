@@ -1,7 +1,7 @@
 "use client";
 
 // Shared login / signup form. `mode` is "login" or "signup".
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 
 export default function AuthForm({ mode }) {
@@ -9,16 +9,8 @@ export default function AuthForm({ mode }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [invite, setInvite] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
-
-  // Prefill the invite code from a share link like /signup?invite=EARLYBIRD.
-  useEffect(() => {
-    if (!isSignup) return;
-    const code = new URLSearchParams(window.location.search).get("invite");
-    if (code) setInvite(code);
-  }, [isSignup]);
 
   async function submit(e) {
     e.preventDefault();
@@ -28,7 +20,7 @@ export default function AuthForm({ mode }) {
       const res = await fetch(`/api/auth/${isSignup ? "signup" : "login"}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, name, invite }),
+        body: JSON.stringify({ email, password, name }),
       });
       const data = await res.json();
       if (data.ok) {
@@ -63,39 +55,23 @@ export default function AuthForm({ mode }) {
         style={{ animationDelay: "90ms" }}
       >
         <h1 className="text-xl font-bold">
-          {isSignup ? "Claim your early-access spot" : "Welcome back"}
+          {isSignup ? "Create your account" : "Welcome back"}
         </h1>
         <p className="mt-1 text-sm text-neutral-500">
           {isSignup
-            ? "Invite-only during early access. Enter your code to get free access while we're in beta."
+            ? "This is your own saasevenly instance — free, unlimited, no card, no plan."
             : "Log in to your saasevenly dashboard."}
         </p>
 
         <form onSubmit={submit} className="mt-5 space-y-3">
           {isSignup && (
-            <>
-              <div>
-                <input
-                  type="text"
-                  required
-                  placeholder="Invite code"
-                  value={invite}
-                  onChange={(e) => setInvite(e.target.value)}
-                  className="w-full rounded-lg border border-accent/40 bg-accent-soft/40 px-3 py-2 font-medium uppercase tracking-wide outline-none transition placeholder:normal-case placeholder:tracking-normal placeholder:text-neutral-400 focus:border-accent focus:ring-2 focus:ring-accent/20"
-                />
-                <p className="mt-1 text-xs text-neutral-500">
-                  Don't have one? saasevenly is invite-only for now — request access
-                  and we'll send you a code.
-                </p>
-              </div>
-              <input
-                type="text"
-                placeholder="Your name (optional)"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full rounded-lg border border-neutral-300 px-3 py-2 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
-              />
-            </>
+            <input
+              type="text"
+              placeholder="Your name (optional)"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full rounded-lg border border-neutral-300 px-3 py-2 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
+            />
           )}
           <input
             type="email"

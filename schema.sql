@@ -1,45 +1,38 @@
 -- ===========================================================================
--- saasevenly — Supabase schema
+-- saasevenly — database schema (Postgres)
 --
--- Run this in your Supabase project:
---   Supabase dashboard → SQL Editor → New query → paste this → Run.
+-- Run this once against your database. With Supabase:
+--   Dashboard → SQL Editor → New query → paste this → Run.
+-- Any Postgres works (Neon, Railway, RDS, a local postgres…).
 --
--- It is fully idempotent — safe to run again any time. It creates the tables,
--- adds newer columns if they're missing, seeds a "demo" tenant + example plans,
--- and seeds a starter invite code (EARLYBIRD) for your invite-only launch.
+-- It is fully idempotent — safe to run again any time. It creates the tables
+-- and seeds a "demo" tenant with example plans so the public /pricing page has
+-- something to show before you sign up.
 -- ===========================================================================
 
 -- ---- founders ("tenants") -------------------------------------------------
+-- One row per person using this instance. saasevenly is free software with no
+-- paid tier, so there is deliberately no plan, seat or expiry column here.
 CREATE TABLE IF NOT EXISTS tenants (
   id                     BIGSERIAL PRIMARY KEY,
   email                  TEXT UNIQUE NOT NULL,
   password_hash          TEXT NOT NULL,
   name                   TEXT,
   site_key               TEXT UNIQUE NOT NULL,          -- goes in the embed snippet
-  subscription_active    BOOLEAN NOT NULL DEFAULT TRUE, -- paying / free-access = TRUE
   allowed_domains        TEXT NOT NULL DEFAULT '',      -- comma-separated allowlist ('' = allow any)
-  -- invite-only launch:
-  invite_code            TEXT,                          -- the code they signed up with
-  free_until             TIMESTAMPTZ,                   -- free-access end date (NULL = n/a)
   -- pricing settings:
   base_usd               NUMERIC NOT NULL DEFAULT 19,
   ending_style           TEXT NOT NULL DEFAULT '9',
   max_discount           INTEGER NOT NULL DEFAULT 20,
   charge_premium         BOOLEAN NOT NULL DEFAULT TRUE,
   payment_provider       TEXT NOT NULL DEFAULT 'stripe',
-  -- gateway connection (their customers' payments):
+  -- gateway connection (for charging THEIR customers):
   stripe_account_id      TEXT,
-  -- saasevenly's OWN billing of this founder (platform Stripe webhooks):
-  stripe_customer_id     TEXT,
-  stripe_subscription_id TEXT,
-  billing_plan           TEXT,
   created_at             TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 -- Add newer columns to databases created before they existed (safe no-ops otherwise).
 ALTER TABLE tenants ADD COLUMN IF NOT EXISTS allowed_domains TEXT NOT NULL DEFAULT '';
-ALTER TABLE tenants ADD COLUMN IF NOT EXISTS invite_code TEXT;
-ALTER TABLE tenants ADD COLUMN IF NOT EXISTS free_until TIMESTAMPTZ;
 
 -- ---- login sessions -------------------------------------------------------
 CREATE TABLE IF NOT EXISTS sessions (
@@ -60,27 +53,15 @@ CREATE TABLE IF NOT EXISTS products (
   created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- ---- invite codes (invite-only launch) -----------------------------------
--- Each code grants free access for `free_days` when redeemed at signup.
--- max_uses = 0 means unlimited. used_count tracks redemptions.
-CREATE TABLE IF NOT EXISTS invite_codes (
-  id         BIGSERIAL PRIMARY KEY,
-  code       TEXT UNIQUE NOT NULL,
-  label      TEXT,                              -- e.g. "Twitter launch", "Friends"
-  max_uses   INTEGER NOT NULL DEFAULT 1,        -- 0 = unlimited
-  used_count INTEGER NOT NULL DEFAULT 0,
-  free_days  INTEGER NOT NULL DEFAULT 90,       -- free access granted on redemption
-  active     BOOLEAN NOT NULL DEFAULT TRUE,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-
 CREATE INDEX IF NOT EXISTS products_tenant_idx ON products (tenant_id);
 CREATE INDEX IF NOT EXISTS sessions_tenant_idx ON sessions (tenant_id);
 CREATE INDEX IF NOT EXISTS tenants_created_idx ON tenants (created_at);
 
 -- ---- seed the demo tenant -------------------------------------------------
-INSERT INTO tenants (email, password_hash, name, site_key, subscription_active, allowed_domains, base_usd)
-VALUES ('demo@saasevenly.local', 'seed:none', 'Demo Founder', 'se_demo_public', TRUE, '', 19)
+-- Powers the public /pricing demo before anyone signs up. The password hash is
+-- a placeholder that can never match a real login.
+INSERT INTO tenants (email, password_hash, name, site_key, allowed_domains, base_usd)
+VALUES ('demo@saasevenly.local', 'seed:none', 'Demo Founder', 'se_demo_public', '', 19)
 ON CONFLICT (email) DO NOTHING;
 
 -- ---- seed a few demo plans (only if the demo tenant has none) -------------
@@ -97,8 +78,15 @@ CROSS JOIN (VALUES
 ) AS v(name, price, interval, sort)
 WHERE NOT EXISTS (SELECT 1 FROM products p WHERE p.tenant_id = t.id);
 
--- ---- seed a starter invite code -------------------------------------------
--- Multi-use (50), 90 days free. Create more in the admin panel.
-INSERT INTO invite_codes (code, label, max_uses, free_days)
-VALUES ('EARLYBIRD', 'Launch code', 50, 90)
-ON CONFLICT (code) DO NOTHING;
+-- ---------------------------------------------------------------------------
+-- Upgrading from the old invite-only build? These columns and this table are
+-- no longer used. Dropping them is optional — uncomment if you want them gone.
+--
+--   ALTER TABLE tenants DROP COLUMN IF EXISTS subscription_active;
+--   ALTER TABLE tenants DROP COLUMN IF EXISTS invite_code;
+--   ALTER TABLE tenants DROP COLUMN IF EXISTS free_until;
+--   ALTER TABLE tenants DROP COLUMN IF EXISTS stripe_customer_id;
+--   ALTER TABLE tenants DROP COLUMN IF EXISTS stripe_subscription_id;
+--   ALTER TABLE tenants DROP COLUMN IF EXISTS billing_plan;
+--   DROP TABLE IF EXISTS invite_codes;
+-- ---------------------------------------------------------------------------

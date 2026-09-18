@@ -2,7 +2,25 @@
   "name": "saasevenly",
   "version": "1.0.0",
   "private": true,
-  "description": "Geo + PPP pricing tool for SaaS founders. Set one base price in USD, show every visitor a fair local price, and charge it through Stripe.",
+  "description": "Free, open-source purchasing-power pricing for SaaS. Set one base price in USD, show every visitor a fair local price, and charge it through your own payment gateway.",
+  "license": "MIT",
+  "homepage": "https://saasevenly.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adnan427ae-PROJ/saasevenly.git"
+  },
+  "bugs": {
+    "url": "https://github.com/adnan427ae-PROJ/saasevenly/issues"
+  },
+  "keywords": [
+    "ppp-pricing",
+    "purchasing-power-parity",
+    "regional-pricing",
+    "geo-pricing",
+    "saas",
+    "nextjs",
+    "self-hosted"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",

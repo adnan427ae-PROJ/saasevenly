@@ -13,6 +13,7 @@ import {
   formatMoney,
 } from "@/lib/pricing";
 import SiteNav from "../components/SiteNav";
+import { DEPLOY_URL } from "@/lib/site";
 
 const INTERVAL_SUFFIX = { month: "/mo", quarter: "/qtr", year: "/yr" };
 
@@ -123,7 +124,9 @@ export default function PricingClient({ plans, siteKey, countries, settings, isO
       if (data.url) {
         window.location.href = data.url;
       } else {
-        setBanner({ kind: "error", text: data.error || "Could not start checkout." });
+        // `demo: true` isn't a failure — it's the public demo explaining that
+        // there's deliberately no gateway behind it.
+        setBanner({ kind: data.demo ? "demo" : "error", text: data.error || "Could not start checkout." });
         setLoadingId(null);
       }
     } catch {
@@ -154,10 +157,20 @@ export default function PricingClient({ plans, siteKey, countries, settings, isO
                 ? "bg-green-50 text-green-700"
                 : banner.kind === "error"
                 ? "bg-red-50 text-red-700"
+                : banner.kind === "demo"
+                ? "border border-accent/40 bg-accent-soft text-neutral-700"
                 : "bg-neutral-100 text-neutral-700")
             }
           >
             {banner.text}
+            {banner.kind === "demo" && (
+              <>
+                {" "}
+                <a href={DEPLOY_URL} target="_blank" rel="noreferrer" className="font-semibold text-accent-dark underline">
+                  Deploy your own →
+                </a>
+              </>
+            )}
           </div>
         )}
 
@@ -171,7 +184,7 @@ export default function PricingClient({ plans, siteKey, countries, settings, isO
           <p className="animate-fade-up mt-2 text-xs text-neutral-400" style={{ animationDelay: "140ms" }}>
             {isOwn
               ? "✓ This is YOUR live pricing page — the plans below come from your dashboard's Plans tab."
-              : "Demo page using the demo account's plans — log in to see yours."}
+              : "Sample plans, real maths — every price below is computed live at today's exchange rates."}
           </p>
 
           {/* Country preview selector (USD default) */}

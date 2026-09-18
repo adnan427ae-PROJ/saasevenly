@@ -18,7 +18,7 @@ const SCRIPT = `/* saasevenly widget — localizes [data-saasevenly] prices */
   var origin = me ? new URL(me.src).origin : window.location.origin;
 
   // The site key lives in this script's own URL: /saasevenly.js?key=se_live_xxx
-  // It ties the embed to one founder's account (and their subscription).
+  // It ties the embed to one founder's account and their saved pricing rules.
   var siteKey = "";
   try { siteKey = me ? new URL(me.src).searchParams.get("key") || "" : ""; } catch (e) {}
 
@@ -49,7 +49,7 @@ const SCRIPT = `/* saasevenly widget — localizes [data-saasevenly] prices */
     fetch(url)
       .then(function (r) { return r.json(); })
       .then(function (data) {
-        // If the account's subscription is inactive (or any error), we leave the
+        // On any error (unknown key, unauthorized domain, network) we leave the
         // original USD prices untouched — the embed simply does nothing.
         if (!data || !data.ok || !data.prices) return;
 

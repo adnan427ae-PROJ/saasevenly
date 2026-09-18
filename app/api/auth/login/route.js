@@ -2,8 +2,17 @@
 import { NextResponse } from "next/server";
 import { getTenantByEmail } from "@/lib/tenants";
 import { verifyPassword, createSession } from "@/lib/auth";
+import { accountsEnabled } from "@/lib/site";
 
 export async function POST(request) {
+  // The public demo deploy doesn't host accounts at all — see lib/site.js.
+  if (!accountsEnabled()) {
+    return NextResponse.json(
+      { error: "This is the public demo — accounts live on your own deployment." },
+      { status: 403 }
+    );
+  }
+
   const { email, password } = await request.json().catch(() => ({}));
   const tenant = await getTenantByEmail(email || "");
 

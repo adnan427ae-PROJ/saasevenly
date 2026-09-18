@@ -7,12 +7,16 @@ import { listProviders } from "@/lib/payments";
 import { getCurrentTenant, isAdminEmail } from "@/lib/auth";
 import { rowToSettings } from "@/lib/tenants";
 import { listProducts } from "@/lib/products";
+import { accountsEnabled } from "@/lib/site";
 import DashboardClient from "./DashboardClient";
 import DashboardHeader from "./DashboardHeader";
 
 export const dynamic = "force-dynamic"; // always read the latest settings/rates
 
 export default async function DashboardPage() {
+  // The public demo deploy has no accounts — see lib/site.js.
+  if (!accountsEnabled()) redirect("/signup");
+
   const tenant = await getCurrentTenant();
   if (!tenant) redirect("/login");
 
@@ -29,12 +33,7 @@ export default async function DashboardPage() {
 
   return (
     <main className="mx-auto max-w-5xl px-6 py-10">
-      <DashboardHeader
-        email={tenant.email}
-        subscriptionActive={Boolean(tenant.subscription_active)}
-        isAdmin={isAdminEmail(tenant.email)}
-        freeUntil={tenant.free_until}
-      />
+      <DashboardHeader email={tenant.email} isAdmin={isAdminEmail(tenant.email)} />
 
       <DashboardClient
         initialSettings={settings}

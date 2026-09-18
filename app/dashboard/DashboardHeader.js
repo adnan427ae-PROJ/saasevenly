@@ -1,16 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { GITHUB_URL, KOFI_URL } from "@/lib/site";
 
-export default function DashboardHeader({ email, subscriptionActive, isAdmin, freeUntil }) {
+export default function DashboardHeader({ email, isAdmin }) {
   async function logout() {
     await fetch("/api/auth/logout", { method: "POST" });
     window.location.href = "/login";
   }
-
-  const freeDaysLeft = freeUntil
-    ? Math.ceil((new Date(freeUntil).getTime() - Date.now()) / 86400000)
-    : null;
 
   return (
     <header className="animate-fade-up mb-8">
@@ -38,12 +35,6 @@ export default function DashboardHeader({ email, subscriptionActive, isAdmin, fr
           >
             View my pricing page →
           </Link>
-          <Link
-            href="/billing"
-            className="rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm font-semibold text-neutral-800 transition hover:border-neutral-400"
-          >
-            Billing
-          </Link>
           <button
             onClick={logout}
             className="rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm font-semibold text-neutral-600 transition hover:border-neutral-400"
@@ -53,36 +44,30 @@ export default function DashboardHeader({ email, subscriptionActive, isAdmin, fr
         </div>
       </div>
 
-      {/* Access status. During early access everyone is on free access. */}
-      <div
-        className={
-          "mt-4 flex items-center justify-between rounded-lg border px-4 py-2.5 text-sm " +
-          (subscriptionActive
-            ? "border-emerald-200 bg-emerald-50 text-emerald-800"
-            : "border-red-200 bg-red-50 text-red-800")
-        }
-      >
+      {/* No plans, no seats, no expiry — just a nudge to support the project. */}
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm text-emerald-900">
         <span>
-          {subscriptionActive ? (
-            freeDaysLeft != null ? (
-              <>🎉 <strong>Free early access</strong> — your embed localizes prices.{" "}
-                {freeDaysLeft > 0
-                  ? <>{freeDaysLeft} day{freeDaysLeft === 1 ? "" : "s"} left in your free window.</>
-                  : <>Your free window has ended.</>}
-              </>
-            ) : (
-              <>● Access <strong>active</strong> — your embed localizes prices.</>
-            )
-          ) : (
-            <>○ Access <strong>inactive</strong> — your embed stops localizing (visitors see plain USD).</>
-          )}
+          ● <strong>Everything unlocked.</strong> saasevenly is free and open
+          source — no plan, no limits, nothing to renew.
         </span>
-        <Link
-          href="/billing"
-          className="rounded-md border border-current px-2.5 py-1 text-xs font-semibold transition hover:bg-white/40"
-        >
-          Details →
-        </Link>
+        <span className="flex items-center gap-2">
+          <a
+            href={GITHUB_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="rounded-md border border-current px-2.5 py-1 text-xs font-semibold transition hover:bg-white/50"
+          >
+            ★ Star
+          </a>
+          <a
+            href={KOFI_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="rounded-md border border-current px-2.5 py-1 text-xs font-semibold transition hover:bg-white/50"
+          >
+            ☕ Donate
+          </a>
+        </span>
       </div>
     </header>
   );

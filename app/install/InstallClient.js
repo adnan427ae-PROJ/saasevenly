@@ -10,7 +10,7 @@ import Link from "next/link";
 import SiteNav from "../components/SiteNav";
 import CopyBox from "../components/CopyBox";
 
-export default function InstallClient({ siteKey, baseUSD }) {
+export default function InstallClient({ siteKey, baseUSD, accounts = true }) {
   const [persona, setPersona] = useState(null); // null | "vibe" | "dev"
   const [origin, setOrigin] = useState("");
   useEffect(() => setOrigin(window.location.origin), []);
@@ -41,10 +41,20 @@ export default function InstallClient({ siteKey, baseUSD }) {
           </p>
           {!siteKey && (
             <p className="animate-fade-up mt-3 text-sm text-neutral-500" style={{ animationDelay: "140ms" }}>
-              Snippets below use a placeholder key —{" "}
-              <Link href="/signup" className="font-medium text-accent-dark underline">create an account</Link>{" "}
-              (or <Link href="/login" className="font-medium text-accent-dark underline">log in</Link>) and
-              they'll fill in with your real site key.
+              {accounts ? (
+                <>
+                  Snippets below use a placeholder key —{" "}
+                  <Link href="/signup" className="font-medium text-accent-dark underline">create an account</Link>{" "}
+                  (or <Link href="/login" className="font-medium text-accent-dark underline">log in</Link>) and
+                  they'll fill in with your real site key.
+                </>
+              ) : (
+                <>
+                  Snippets below use a placeholder key and this demo's URL.{" "}
+                  <Link href="/signup" className="font-medium text-accent-dark underline">Deploy your own copy</Link>{" "}
+                  and both fill in with your instance and your real site key.
+                </>
+              )}
             </p>
           )}
         </div>
@@ -267,7 +277,7 @@ export default function InstallClient({ siteKey, baseUSD }) {
               <ul className="mt-2 space-y-1.5 text-sm text-neutral-600">
                 <li>• Append <code className="rounded bg-neutral-100 px-1">?country=IN</code> (or BR, CH…) to any page URL to preview that market without a VPN.</li>
                 <li>• In production the country comes from your CDN's geo header (Vercel/Cloudflare) or an IP lookup.</li>
-                <li>• If your saasevenly subscription is inactive, the widget quietly does nothing — visitors just see your USD prices.</li>
+                <li>• If anything fails — unknown key, unregistered domain, network hiccup — the widget quietly does nothing and visitors just see your USD prices.</li>
               </ul>
             </section>
           </div>
@@ -276,7 +286,8 @@ export default function InstallClient({ siteKey, baseUSD }) {
         {/* Footer CTA */}
         {persona && (
           <p className="mt-10 text-center text-sm text-neutral-500">
-            Stuck? The <Link href="/dashboard" className="text-accent-dark underline">dashboard's Install tab</Link>{" "}
+            Stuck? Your instance's{" "}
+            <Link href="/dashboard" className="text-accent-dark underline">dashboard Install tab</Link>{" "}
             has the same snippets pre-filled with your key, and the{" "}
             <Link href="/pricing" className="text-accent-dark underline">live demo</Link> shows the result.
           </p>

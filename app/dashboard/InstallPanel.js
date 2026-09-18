@@ -24,8 +24,8 @@ export default function InstallPanel({ baseUSD, siteKey }) {
   const [origin, setOrigin] = useState("");
   useEffect(() => setOrigin(window.location.origin), []);
 
-  // The site key ties this embed to YOUR account. Prices only localize while
-  // your saasevenly subscription is active.
+  // The site key ties this embed to YOUR account, so the API knows whose
+  // pricing rules to apply.
   const keyQuery = siteKey ? `?key=${siteKey}` : "";
   const scriptUrl = `${origin || "https://your-website.com"}/saasevenly.js${keyQuery}`;
 
@@ -97,9 +97,9 @@ export default function InstallPanel({ baseUSD, siteKey }) {
         <Step n={4} title="Lock your key to your domain (stops freeloaders)">
           <p className="text-sm text-neutral-600">
             Your site key is visible in your page's source, so on its own anyone
-            could copy it onto their site and use your subscription for free. Go
-            to the <strong>Domains</strong> tab and add your website — after that
-            your key only works on your domain, and nowhere else.
+            could paste it onto their own site and run their prices through your
+            instance. Go to the <strong>Domains</strong> tab and add your website
+            — after that your key only works on your domain, and nowhere else.
           </p>
           <p className="text-xs text-neutral-500">
             <strong>What this does:</strong> saasevenly checks every request comes

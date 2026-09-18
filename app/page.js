@@ -10,6 +10,7 @@ import SiteNav from "./components/SiteNav";
 import HeroVisual from "./components/HeroVisual";
 import Reveal from "./components/Reveal";
 import CountUp from "./components/CountUp";
+import { GITHUB_URL, KOFI_URL, DEPLOY_URL, LICENSE } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
@@ -106,12 +107,12 @@ export default async function Home() {
           </div>
 
           <div className="animate-fade-up">
-            <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-amber-200 bg-accent-soft px-3 py-1 text-sm font-medium text-accent-dark">
+            <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-sm font-medium text-emerald-800">
               <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
               </span>
-              Invite-only early access · free while in beta
+              Free &amp; open source · {LICENSE} licensed · self-hosted
             </span>
           </div>
           <h1 className="animate-fade-up text-5xl font-bold tracking-tight sm:text-6xl" style={{ animationDelay: "80ms" }}>
@@ -124,25 +125,43 @@ export default async function Home() {
           >
             You set <strong>one</strong> base price in USD. saasevenly shows every
             visitor a fair price in their own currency — with charm endings that
-            convert — and charges it through Stripe. The exact playbook Netflix,
-            Apple, and Spotify use, in two lines of code.
+            convert — and charges it through your own Stripe. The exact playbook
+            Netflix, Apple, and Spotify use, in two lines of code.
+          </p>
+          <p
+            className="animate-fade-up mx-auto mt-3 max-w-2xl text-neutral-500"
+            style={{ animationDelay: "200ms" }}
+          >
+            It's <strong className="text-neutral-700">free and open source</strong>.
+            You run it yourself, on your own database, with your own payment keys
+            — so the money goes straight from your customer to you.
           </p>
           <div
             className="animate-fade-up mt-8 flex flex-wrap items-center justify-center gap-3"
             style={{ animationDelay: "240ms" }}
           >
-            <Link
-              href="/signup"
+            <a
+              href={DEPLOY_URL}
+              target="_blank"
+              rel="noreferrer"
               className="rounded-lg bg-accent px-6 py-3 font-semibold text-white shadow-lg shadow-accent/30 transition hover:-translate-y-0.5 hover:bg-accent-dark hover:shadow-xl hover:shadow-accent/30"
             >
-              Redeem your invite
-            </Link>
+              Deploy your own →
+            </a>
             <Link
               href="/pricing"
               className="rounded-lg border border-neutral-300 bg-white px-6 py-3 font-semibold text-neutral-800 transition hover:-translate-y-0.5 hover:border-neutral-400 hover:shadow-md"
             >
               See it live →
             </Link>
+            <a
+              href={GITHUB_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-lg border border-neutral-300 bg-white px-6 py-3 font-semibold text-neutral-800 transition hover:-translate-y-0.5 hover:border-neutral-400 hover:shadow-md"
+            >
+              ★ GitHub
+            </a>
           </div>
 
           {/* Animated globe + floating localized prices */}
@@ -319,8 +338,8 @@ export default async function Home() {
           </div>
           <p className="mx-auto mt-5 max-w-2xl text-center text-sm text-neutral-500">
             This is exactly how the App Store, Steam and Spotify price — cheaper in
-            Brazil, pricier in Switzerland. Toggle the premium on or off anytime in
-            your <Link href="/dashboard" className="text-accent-dark underline">dashboard</Link>.
+            Brazil, pricier in Switzerland. The premium is a single toggle in the
+            dashboard, on by default.
           </p>
         </section>
 
@@ -328,13 +347,13 @@ export default async function Home() {
         <section className="mt-24">
           <Reveal>
             <h2 className="text-center text-3xl font-bold tracking-tight">
-              Your {priced.length} markets, split into tiers
+              {priced.length} markets, split into tiers
             </h2>
             <p className="mx-auto mt-3 max-w-2xl text-center text-neutral-600">
-              Live prices computed right now from your base of{" "}
-              <strong>${settings.baseUSD}</strong>, capped at a{" "}
-              <strong>{settings.maxDiscount}%</strong> max discount. Change them on the{" "}
-              <Link href="/dashboard" className="text-accent-dark underline">dashboard</Link>.
+              Not a mockup — these are computed right now from a base of{" "}
+              <strong>${settings.baseUSD}</strong> at today's exchange rates, capped
+              at a <strong>{settings.maxDiscount}%</strong> max discount. Every number
+              is a dial you control.
             </p>
           </Reveal>
 
@@ -379,12 +398,12 @@ export default async function Home() {
         <section className="mt-24">
           <Reveal>
             <h2 className="text-center text-3xl font-bold tracking-tight">
-              Built so <span className="text-gradient">one subscription = one business</span>
+              Built so <span className="text-gradient">nobody can game your prices</span>
             </h2>
             <p className="mx-auto mt-3 max-w-2xl text-center text-neutral-600">
-              Regional pricing only works if people can't game it. saasevenly is
-              locked down on three fronts, so your prices — and your revenue — stay
-              yours.
+              Regional pricing only works if visitors can't just claim to be in
+              the cheapest country. saasevenly is locked down on three fronts, so
+              your prices — and your revenue — stay yours.
             </p>
           </Reveal>
           <div className="mt-10 grid gap-5 sm:grid-cols-3">
@@ -392,17 +411,60 @@ export default async function Home() {
               {
                 icon: "🔒",
                 title: "Locked to your domain",
-                body: "Your install key only works on the website you register. If someone copies it onto their own site, the browser reports the wrong domain and saasevenly refuses to serve them. No one rides your subscription for free.",
+                body: "Your install key only works on the website you register. If someone copies it onto their own site, the browser reports the wrong domain and your instance refuses to serve them.",
               },
               {
                 icon: "🧮",
-                title: "Prices set on our server",
-                body: "The final charge is always computed on our servers from your saved settings — never trusted from the browser. A visitor can't edit the page to pay $1: checkout re-prices everything server-side before a card is touched.",
+                title: "Prices set on the server",
+                body: "The final charge is always computed server-side from your saved settings — never trusted from the browser. A visitor can't edit the page to pay $1: checkout re-prices everything before a card is touched.",
               },
               {
-                icon: "🎟️",
-                title: "Turns off the moment you stop paying",
-                body: "Localization is tied to your live subscription. Cancel and every embed quietly falls back to your plain USD price. Active subscription in, fair local prices out — cleanly metered, no leaks.",
+                icon: "🗝️",
+                title: "Your keys, your money",
+                body: "Payments run through your own Stripe, PayPal, Razorpay or Dodo account. There's no platform in the middle taking a cut, holding funds, or seeing your customer list — because there's no platform at all.",
+              },
+            ].map((c, i) => (
+              <Reveal key={c.title} delay={i * 120}>
+                <div className="card-lift h-full rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm">
+                  <div className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-accent-soft text-2xl">
+                    {c.icon}
+                  </div>
+                  <h3 className="mt-3 font-bold">{c.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-neutral-600">{c.body}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+
+        {/* ---------- Free & open source ---------- */}
+        <section className="mt-24">
+          <Reveal>
+            <h2 className="text-center text-3xl font-bold tracking-tight">
+              And it's <span className="text-gradient">completely free</span>
+            </h2>
+            <p className="mx-auto mt-3 max-w-2xl text-center text-neutral-600">
+              Not free-with-an-asterisk. There is no paid tier, no trial clock, no
+              seat count, no feature held back. The whole thing is {LICENSE}-licensed
+              on GitHub — read it, fork it, sell it, whatever you like.
+            </p>
+          </Reveal>
+          <div className="mt-10 grid gap-5 sm:grid-cols-3">
+            {[
+              {
+                icon: "📦",
+                title: "Runs on your own stack",
+                body: "One Next.js app plus a Postgres database. Deploy it to Vercel in about two minutes, or anywhere else that runs Node. Your data never touches anyone else's server.",
+              },
+              {
+                icon: "🔍",
+                title: "Nothing hidden",
+                body: "Every pricing rule, PPP factor and rounding decision is plain, commented JavaScript you can read in an afternoon. If you disagree with a number, change it.",
+              },
+              {
+                icon: "☕",
+                title: "Donations, not subscriptions",
+                body: "If it makes you money, a coffee keeps the demo online and the markets up to date. Entirely optional — the software is identical either way.",
               },
             ].map((c, i) => (
               <Reveal key={c.title} delay={i * 120}>
@@ -426,21 +488,23 @@ export default async function Home() {
               One base price. A fair price everywhere. Two lines of code.
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-neutral-700">
-              Set it up in a couple of minutes and start converting the buyers your
-              flat USD price was turning away.
+              Deploy your own copy in a couple of minutes and start converting the
+              buyers your flat USD price was turning away.
             </p>
             <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-              <Link
-                href="/signup"
+              <a
+                href={DEPLOY_URL}
+                target="_blank"
+                rel="noreferrer"
                 className="rounded-lg bg-accent px-6 py-3 font-semibold text-white shadow-lg shadow-accent/30 transition hover:-translate-y-0.5 hover:bg-accent-dark"
               >
-                Redeem your invite
-              </Link>
+                Deploy your own →
+              </a>
               <Link
                 href="/pricing"
                 className="rounded-lg border border-neutral-400 bg-white px-6 py-3 font-semibold text-neutral-800 transition hover:-translate-y-0.5 hover:border-neutral-500"
               >
-                View my pricing page →
+                See the live demo
               </Link>
             </div>
           </div>
@@ -449,12 +513,14 @@ export default async function Home() {
         {/* ---------- Footer ---------- */}
         <footer className="mt-16 flex flex-col items-center justify-between gap-3 border-t border-neutral-200 pt-8 text-sm text-neutral-400 sm:flex-row">
           <span>
-            saas<span className="text-accent">evenly</span> — fair pricing, everywhere.
+            saas<span className="text-accent">evenly</span> — fair pricing, everywhere.{" "}
+            <span className="text-neutral-300">{LICENSE} licensed.</span>
           </span>
-          <div className="flex gap-5">
+          <div className="flex flex-wrap justify-center gap-5">
             <Link href="/pricing" className="transition hover:text-neutral-600">Live demo</Link>
-            <Link href="/login" className="transition hover:text-neutral-600">Log in</Link>
-            <Link href="/signup" className="transition hover:text-neutral-600">Sign up</Link>
+            <Link href="/install" className="transition hover:text-neutral-600">Install guide</Link>
+            <a href={GITHUB_URL} target="_blank" rel="noreferrer" className="transition hover:text-neutral-600">GitHub</a>
+            <a href={KOFI_URL} target="_blank" rel="noreferrer" className="transition hover:text-neutral-600">Donate</a>
           </div>
         </footer>
       </main>

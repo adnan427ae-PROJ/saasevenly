@@ -75,8 +75,8 @@ export default function DomainsPanel({ initialDomains }) {
       <p className="mt-1 text-sm text-neutral-600">
         Your site key is <strong>public</strong> — anyone can read it in your
         page's source. Locking it to your domain(s) means a copied key won't work
-        on anyone else's site: they can't ride your subscription for free. This is
-        the same protection Google Maps and Stripe keys use.
+        on anyone else's site: no one else can run their pricing through your
+        instance. This is the same protection Google Maps and Stripe keys use.
       </p>
 
       {/* Lock status banner */}
@@ -97,9 +97,9 @@ export default function DomainsPanel({ initialDomains }) {
         ) : (
           <p className="text-sm text-amber-800">
             🔓 <strong>Not locked yet.</strong> Right now your key works on{" "}
-            <em>any</em> website. Add your domain below so no one else can use
-            your subscription. (Your own embed keeps working — this only blocks
-            other people's sites.)
+            <em>any</em> website. Add your domain below so no one else can point
+            their site at your instance. (Your own embed keeps working — this
+            only blocks other people's sites.)
           </p>
         )}
       </div>
